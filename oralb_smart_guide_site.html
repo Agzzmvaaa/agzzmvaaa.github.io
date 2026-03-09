@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oral‑B Smart Guide — цифровой гид по улыбке</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card-bg: #ffffff;
+      --primary: #0062cc;
+      --primary-soft: #e3f0ff;
+      --accent: #ffc107;
+      --text-main: #222831;
+      --text-muted: #6c757d;
+      --border-soft: #dde2ee;
+      --shadow-soft: 0 10px 24px rgba(15, 23, 42, 0.12);
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-pill: 999px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+    }
+    a { color: var(--primary); text-decoration: none; }
+
+    .page { min-height: 100vh; display: flex; flex-direction: column; }
+
+    header {
+      position: sticky; top: 0; z-index: 10;
+      backdrop-filter: blur(16px);
+      background: rgba(245,247,251,0.95);
+      border-bottom: 1px solid rgba(221,226,238,0.9);
+    }
+    .nav {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .logo-mark {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: radial-gradient(circle at 25% 0%, #fff, #0074d9);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 700; font-size: 18px;
+      box-shadow: 0 6px 16px rgba(0,116,217,0.4);
+    }
+    .logo-title { font-weight: 700; font-size: 16px; }
+    .logo-sub {
+      font-size: 11px; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.08em;
+    }
+
+    .nav-links { display: flex; gap: 14px; font-size: 13px; color: var(--text-muted); }
+    .nav-links button {
+      border: none; background: transparent; padding: 0;
+      font: inherit; color: inherit; cursor: pointer;
+      position: relative; padding-bottom: 2px;
+    }
+    .nav-links button::after {
+      content: ""; position: absolute; left: 0; bottom: 0;
+      width: 0; height: 2px; background: var(--primary);
+      transition: width .18s;
+    }
+    .nav-links button:hover::after { width: 100%; }
+
+    .btn {
+      border-radius: var(--radius-pill);
+      padding: 6px 16px;
+      font-size: 13px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg,#0074d9,#0052a3);
+      color:#fff; box-shadow: 0 8px 18px rgba(0,82,163,0.4);
+    }
+    .btn-ghost {
+      background: transparent; border-color: var(--border-soft);
+      color: var(--text-main);
+    }
+
+    main { flex: 1; }
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 22px 20px 48px;
+    }
+    .hidden { display: none !important; }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0,1.4fr) minmax(0,1fr);
+      gap: 24px; align-items: center;
+      padding-bottom: 20px;
+    }
+    .hero-badge {
+      display:inline-flex; align-items:center; gap:6px;
+      padding:3px 10px; border-radius: var(--radius-pill);
+      font-size:10px; text-transform:uppercase;
+      background:var(--primary-soft); color:var(--primary);
+      letter-spacing:.1em; margin-bottom:8px;
+    }
+    .hero-title { font-size: 30px; line-height:1.2; margin:0 0 10px; }
+    .hero-sub {
+      font-size: 14px; color:var(--text-muted);
+      max-width:480px; margin-bottom:14px;
+    }
+    .hero-cta { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; }
+    .hero-stats { display:flex; flex-wrap:wrap; gap:16px; font-size:12px; color:var(--text-muted); }
+    .hero-stat strong { display:block; font-size:15px; color:var(--text-main); }
+
+    .hero-card {
+      background: radial-gradient(circle at 10% 0%,#fff,#dfebff);
+      border-radius: var(--radius-lg);
+      padding:16px 16px 14px;
+      box-shadow: var(--shadow-soft);
+      border:1px solid var(--border-soft);
+      position:relative; overflow:hidden;
+    }
+    .hero-pill {
+      position:absolute; right:-40px; bottom:-50px;
+      width:150px; height:150px; border-radius:50px;
+      background:linear-gradient(135deg,#fff,#7fb7ff,#004a99);
+      opacity:.95; transform:rotate(-18deg);
+    }
+    .hero-card h3 { margin:0 0 6px; font-size:14px; }
+    .hero-card ul { margin:0; padding-left:16px; font-size:12px; color:var(--text-muted); }
+    .hero-card li+li { margin-top:3px; }
+
+    .section { margin-top:24px; }
+    .section-header {
+      display:flex; justify-content:space-between;
+      align-items:baseline; gap:10px; margin-bottom:10px;
+    }
+    .section-title { margin:0; font-size:19px; }
+    .section-sub { font-size:13px; color:var(--text-muted); max-width:520px; }
+
+    .grid-3 {
+      display:grid; grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:14px;
+    }
+    .card {
+      background:var(--card-bg);
+      border-radius:var(--radius-md);
+      padding:12px 12px 10px;
+      border:1px solid var(--border-soft);
+      box-shadow:0 6px 16px rgba(15,23,42,0.04);
+      font-size:13px;
+    }
+    .card-label { font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; }
+    .card-title { font-weight:600; margin-bottom:4px; }
+
+    .mascot-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+      gap:12px;
+    }
+    .mascot-name { font-weight:600; margin-bottom:4px; }
+
+    .list-clean { list-style:none; margin:0; padding-left:0; font-size:13px; color:var(--text-muted); }
+    .list-clean li+li { margin-top:4px; }
+    .list-clean li::before { content:"•"; color:var(--primary); margin-right:5px; }
+
+    /* Chat */
+    .assistant-shell {
+      margin-top:20px;
+      display:grid;
+      grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);
+      gap:18px; align-items:flex-start;
+    }
+    .chat-widget {
+      background:#0f172a;
+      border-radius:18px;
+      padding:12px;
+      color:#e5e7eb;
+      box-shadow:0 16px 30px rgba(15,23,42,0.6);
+      display:flex; flex-direction:column;
+      max-height:420px;
+    }
+    .chat-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+    .chat-avatar {
+      width:30px; height:30px; border-radius:50%;
+      background:radial-gradient(circle at 30% 0%,#fff,#38bdf8);
+      display:flex; align-items:center; justify-content:center;
+      color:#0f172a; font-weight:700; font-size:16px;
+    }
+    .chat-title { margin-left:8px; font-size:11px; }
+    .chat-title-main { font-size:13px; font-weight:600; }
+    .chat-status-dot {
+      width:8px; height:8px; border-radius:50%;
+      background:#22c55e; box-shadow:0 0 0 4px rgba(34,197,94,0.3);
+    }
+    .chat-body {
+      flex:1; overflow-y:auto; padding:4px 0 4px;
+      margin-bottom:6px; font-size:12px;
+    }
+    .msg {
+      max-width:90%; padding:6px 8px;
+      border-radius:14px; margin-bottom:4px;
+      line-height:1.4;
+    }
+    .msg-bot { background:#111827; border:1px solid #374151; }
+    .msg-user {
+      background:#2563eb; color:#e5e7eb;
+      margin-left:auto; border-bottom-right-radius:4px;
+    }
+    .quick-actions { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:6px; }
+    .quick-btn {
+      border-radius:999px; border:1px solid #4b5563;
+      background:transparent; color:#e5e7eb;
+      padding:3px 8px; font-size:11px; cursor:pointer;
+    }
+    .chat-input-row {
+      display:flex; align-items:center; gap:6px;
+      border-radius:999px; border:1px solid #1f2937;
+      background:#020617; padding:3px 4px 3px 9px;
+    }
+    .chat-input-row input {
+      flex:1; border:none; outline:none;
+      background:transparent; color:#e5e7eb; font-size:12px;
+    }
+    .chat-send {
+      width:26px; height:26px; border-radius:999px;
+      border:none; cursor:pointer;
+      background:linear-gradient(135deg,#22c55e,#16a34a);
+      color:#020617; font-size:14px;
+    }
+
+    /* Game */
+    .page-label {
+      font-size:11px; text-transform:uppercase;
+      letter-spacing:0.08em; color:var(--text-muted);
+      margin-bottom:4px;
+    }
+    .game-layout {
+      margin-top:10px;
+      display:grid;
+      grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);
+      gap:18px; align-items:flex-start;
+    }
+    .game-panel {
+      background:var(--card-bg);
+      border-radius:var(--radius-lg);
+      padding:14px 14px 12px;
+      border:1px solid var(--border-soft);
+      box-shadow:var(--shadow-soft);
+    }
+    .problem-tags { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0 8px; }
+    .problem-tag {
+      border-radius:999px; border:1px solid var(--border-soft);
+      background:#f9fafb; padding:4px 9px; font-size:11px;
+      cursor:pointer;
+    }
+    .problem-tag.active {
+      background:var(--primary-soft);
+      border-color:var(--primary); color:var(--primary);
+    }
+    .selected-problem { font-size:12px; color:var(--text-muted); margin-top:4px; }
+    .progress-wrap { margin-top:12px; font-size:12px; }
+    .progress-bar-bg {
+      width:100%; height:10px; border-radius:999px;
+      background:#e5e7eb; overflow:hidden; margin-top:4px;
+    }
+    .progress-bar-inner {
+      height:100%; width:0;
+      background:linear-gradient(90deg,#22c55e,#16a34a);
+      transition:width .2s;
+    }
+    .product-reco {
+      margin-top:10px; font-size:12px;
+      background:#ecfdf3; border-radius:var(--radius-md);
+      border:1px solid #bbf7d0; padding:8px 10px; color:#14532d;
+    }
+
+    footer {
+      font-size:11px; color:var(--text-muted);
+      padding:8px 16px 16px; text-align:center;
+    }
+
+    @media (max-width: 920px) {
+      .hero { grid-template-columns:minmax(0,1fr); }
+      .assistant-shell, .game-layout { grid-template-columns:minmax(0,1fr); }
+    }
+    @media (max-width: 700px) {
+      .nav-links { display:none; }
+      .grid-3 { grid-template-columns:minmax(0,1fr); }
+      .hero-title { font-size:24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="nav">
+        <div class="logo">
+          <div class="logo-mark">B</div>
+          <div>
+            <div class="logo-title">Oral‑B Smart Guide</div>
+            <div class="logo-sub">цифровой гид по улыбке</div>
+          </div>
+        </div>
+        <nav class="nav-links">
+          <button type="button" onclick="showPage('home')">Главная</button>
+          <button type="button" onclick="showPage('game')">Игра «Путь Зубика»</button>
+          <button type="button" onclick="showPage('home');scrollToId('assistant')">AI‑ассистент</button>
+        </nav>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-ghost" onclick="showPage('game')">Перейти к игре</button>
+          <button class="btn btn-primary" onclick="showPage('home');scrollToId('assistant')">Спросить бота</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- ГЛАВНАЯ -->
+      <div id="page-home" class="container">
+        <section class="hero">
+          <div>
+            <div class="hero-badge">Кейс P&amp;G · Oral‑B</div>
+            <h1 class="hero-title">Цифровая экосистема Oral‑B Smart Guide</h1>
+            <p class="hero-sub">
+              Новая линейка паст Oral‑B, AI‑бот и игра «Путь Зубика» вместе превращают чистку зубов
+              из рутины в полезную привычку — для подростков и родителей.
+            </p>
+            <div class="hero-cta">
+              <button class="btn btn-primary" onclick="showPage('home');scrollToId('assistant')">Запустить AI‑ассистента</button>
+              <button class="btn btn-ghost" onclick="showPage('game')">Играть в «Путь Зубика»</button>
+            </div>
+            <div class="hero-stats">
+              <div class="hero-stat">
+                <strong>2&nbsp;ЦА</strong>
+                Молодёжь 14–25 и осознанные родители 30–40
+              </div>
+              <div class="hero-stat">
+                <strong>3&nbsp;задачи</strong>
+                Защита, восстановление, свежесть
+              </div>
+              <div class="hero-stat">
+                <strong>1&nbsp;экосистема</strong>
+                Полка → QR → бот → игра → покупка
+              </div>
+            </div>
+          </div>
+          <div class="hero-card">
+            <div class="hero-pill"></div>
+            <h3>Экосистема в одном слайде</h3>
+            <ul>
+              <li><b>Паста</b>: линейка Oral‑B под разные задачи.</li>
+              <li><b>AI‑бот</b>: диагностика улыбки и подбор курса.</li>
+              <li><b>«Путь Зубика»</b>: игра, которая закрепляет привычку.</li>
+              <li><b>Ритейл</b>: QR‑вход с полки и e‑com.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-header">
+            <h2 class="section-title">Модули решения</h2>
+            <p class="section-sub">Три блока — продукт, сервис и ритейл — работают как единая система.</p>
+          </div>
+          <div class="grid-3">
+            <article class="card">
+              <div class="card-label">1. Продукт</div>
+              <div class="card-title">Новая линейка паст Oral‑B</div>
+              <p>
+                Концепт трёх «супер‑сил»: защита от пигментации, био‑ремонт эмали и длительная свежесть.
+                Каждая паста связана с персонажами и сценариями AI‑бота.
+              </p>
+            </article>
+            <article class="card">
+              <div class="card-label">2. Цифровой сервис</div>
+              <div class="card-title">Telegram‑бот + AI‑диагностика</div>
+              <p>
+                Пользователь сканирует QR, загружает фото улыбки и отвечает на несколько вопросов —
+                бот оценивает риски и запускает его в «Путь Зубика».
+              </p>
+            </article>
+            <article class="card">
+              <div class="card-label">3. Ритейл</div>
+              <div class="card-title">Полка как вход в экосистему</div>
+              <p>
+                Брендированная выкладка, заметные QR‑коды и понятный оффер
+                конвертируют полку и карточки товара в вход в экосистему.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-header">
+            <h2 class="section-title">Маскоты системы</h2>
+            <p class="section-sub">Персонажи из вашего файла «Персонажи для системы».</p>
+          </div>
+          <div class="mascot-grid">
+            <article class="card">
+              <div class="card-title">Зубик‑Новичок</div>
+              <p>Стартовое состояние зубов. Немного налёта, нет стабильной привычки. Исходная точка игры.</p>
+            </article>
+            <article class="card">
+              <div class="card-title">Зубик‑Защитник</div>
+              <p>Зуб с «щитком» вокруг эмали. Символ курса защитной пасты и регулярной чистки.</p>
+            </article>
+            <article class="card">
+              <div class="card-title">Молекула‑строитель</div>
+              <p>Молекула, которая «чинит» эмаль по кусочкам. Ассоциирована с пастой для чувствительных зубов.</p>
+            </article>
+            <article class="card">
+              <div class="card-title">Свежик</div>
+              <p>Капсула свежести, которая показывает, как долго ещё действует эффект пасты.</p>
+            </article>
+            <article class="card">
+              <div class="card-title">Щётка‑тренер</div>
+              <p>Тренер, который объясняет технику чистки, даёт задания и комментирует прогресс.</p>
+            </article>
+            <article class="card">
+              <div class="card-title">Бактерии</div>
+              <p>Забавные «антагонисты», которых игрок побеждает правильной чисткой и верным выбором пасты.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="section" id="assistant">
+          <div class="section-header">
+            <h2 class="section-title">AI‑ассистент Oral‑B Smart Guide</h2>
+            <p class="section-sub">
+              Прототип бота, который по проблеме пользователя рекомендует курс и связывает его с персонажами.
+            </p>
+          </div>
+          <div class="assistant-shell">
+            <div>
+              <p><b>Как пользоваться:</b></p>
+              <ul class="list-clean">
+                <li>Опишите свою проблему: кофе/чай, чувствительность, белизна, запах, дети и т.п.</li>
+                <li>Бот предложит курс Oral‑B (какие пасты и режим) и расскажет, какие маскоты его отражают.</li>
+                <li>Скрипты из ответов можно перенести в Telegram‑бота и презентацию.</li>
+              </ul>
+            </div>
+            <div class="chat-widget">
+              <div class="chat-header">
+                <div style="display:flex;align-items:center;">
+                  <div class="chat-avatar">B</div>
+                  <div class="chat-title">
+                    <div class="chat-title-main">Oral‑B Smart Guide</div>
+                    <div class="chat-title-sub">AI‑ассистент по уходу за улыбкой</div>
+                  </div>
+                </div>
+                <div class="chat-status-dot"></div>
+              </div>
+              <div class="chat-body" id="chat-body">
+                <div class="msg msg-bot">
+                  Привет! Расскажи, что тебя беспокоит: «много пью кофе», «очень чувствительные зубы»,
+                  «надо приучить ребёнка» и т.п. Я предложу курс Oral‑B и свяжу его с персонажами «Пути Зубика».
+                </div>
+              </div>
+              <div class="quick-actions">
+                <button class="quick-btn" data-prompt="Я много пью кофе и хочу меньше пигментации и более белую улыбку">
+                  Кофе и белизна
+                </button>
+                <button class="quick-btn" data-prompt="Очень чувствительные зубы и иногда кровоточат дёсны">
+                  Чувствительность и дёсны
+                </button>
+                <button class="quick-btn" data-prompt="Хочу приучить ребёнка 8 лет регулярно чистить зубы">
+                  Для ребёнка
+                </button>
+              </div>
+              <form class="chat-input-row" id="chat-form">
+                <input id="chat-input" type="text" autocomplete="off"
+                       placeholder="Например: часто пью кофе, зубы стали чувствительными">
+                <button type="submit" class="chat-send">➤</button>
+              </form>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ИГРА -->
+      <div id="page-game" class="container hidden">
+        <p class="page-label">Игровая страница</p>
+        <div class="section-header">
+          <h2 class="section-title">Игра «Путь Зубика»</h2>
+          <p class="section-sub">
+            Прототип: выбери свою задачу, получи курс Oral‑B, а затем нажимай «Чистка сегодня» —
+            Зубик‑Новичок будет эволюционировать в Зубика‑Защитника.
+          </p>
+        </div>
+
+        <div class="game-layout">
+          <div class="game-panel">
+            <div class="card-label">Шаг 1</div>
+            <div class="card-title">Выбери основную задачу</div>
+            <div class="problem-tags" id="problem-tags">
+              <button class="problem-tag" data-problem="coffee">
+                Много кофе/чая, боюсь пигментации
+              </button>
+              <button class="problem-tag" data-problem="sensitivity">
+                Сильная чувствительность, возможна кровь
+              </button>
+              <button class="problem-tag" data-problem="whitening">
+                Хочу белее улыбку без вреда эмали
+              </button>
+              <button class="problem-tag" data-problem="fresh">
+                Долгая свежесть дыхания в течение дня
+              </button>
+              <button class="problem-tag" data-problem="kids">
+                Приучить ребёнка чистить зубы
+              </button>
+            </div>
+            <div class="selected-problem" id="selected-problem">
+              Задача ещё не выбрана.
+            </div>
+
+            <div class="progress-wrap">
+              <span id="progress-label">Уровень: Зубик‑Новичок</span>
+              <span style="float:right;" id="streak-label">Streak: 0 дней</span>
+              <div style="clear:both;"></div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-inner" id="progress-bar"></div>
+              </div>
+              <button class="btn btn-primary" id="clean-button" style="margin-top:6px;">
+                Отметить чистку сегодня
+              </button>
+            </div>
+
+            <div class="product-reco" id="product-reco">
+              Здесь появится рекомендованный курс Oral‑B и связка с персонажами после выбора задачи.
+            </div>
+          </div>
+
+          <div class="game-panel">
+            <div class="card-label">Диалог с Щёткой‑тренером</div>
+            <div class="card-title">Мини‑бот под игру</div>
+            <p style="font-size:12px;color:var(--text-muted);margin-bottom:6px;">
+              Щётка‑тренер использует ту же логику, что AI‑ассистент на главной, но говорит языком игры:
+              какие враги‑Бактерии появляются, какой Зубик сейчас и что делать дальше.
+            </p>
+            <div class="chat-widget" style="max-height:320px;">
+              <div class="chat-header">
+                <div style="display:flex;align-items:center;">
+                  <div class="chat-avatar">Щ</div>
+                  <div class="chat-title">
+                    <div class="chat-title-main">Щётка‑тренер</div>
+                    <div class="chat-title-sub">прототип игрового бота</div>
+                  </div>
+                </div>
+                <div class="chat-status-dot"></div>
+              </div>
+              <div class="chat-body" id="chat-body-game">
+                <div class="msg msg-bot">
+                  Я Щётка‑тренер. Нажми задачу слева или напиши свою —
+                  расскажу, какие продукты Oral‑B и персонажи помогут твоему Зубику.
+                </div>
+              </div>
+              <div class="quick-actions">
+                <button class="quick-btn" data-prompt-game="Кофе и пигментация эмали">Кофе и пятна</button>
+                <button class="quick-btn" data-prompt-game="Очень чувствительные зубы">Сильная чувствительность</button>
+                <button class="quick-btn" data-prompt-game="Ребёнок 8 лет, хотим привычку">Ребёнок 8 лет</button>
+              </div>
+              <form class="chat-input-row" id="chat-form-game">
+                <input id="chat-input-game" type="text" autocomplete="off"
+                       placeholder="Опиши задачу: кофе, чувствительность, дети...">
+                <button type="submit" class="chat-send">➤</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      Прототип сайта под кейс P&amp;G «Опыт или молодость?». Все расчёты и персонажи — демонстрационные.
+    </footer>
+  </div>
+
+  <script>
+    function scrollToId(id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    function showPage(which) {
+      document.getElementById('page-home').classList.toggle('hidden', which !== 'home');
+      document.getElementById('page-game').classList.toggle('hidden', which !== 'game');
+    }
+
+    // ==== Главный AI‑ассистент ====
+    const chatBody = document.getElementById('chat-body');
+    const chatForm = document.getElementById('chat-form');
+    const chatInput = document.getElementById('chat-input');
+
+    function appendMessage(container, text, fromBot) {
+      const div = document.createElement('div');
+      div.className = 'msg ' + (fromBot ? 'msg-bot' : 'msg-user');
+      div.textContent = text;
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function getMainResponse(textRaw) {
+      const t = textRaw.toLowerCase();
+      const coffee = t.includes('кофе') || t.includes('чай') || t.includes('пятн');
+      const sens = t.includes('чувств') || t.includes('болит') || t.includes('холод');
+      const gums = t.includes('десн') || t.includes('кровоточ');
+      const white = t.includes('бел') || t.includes('отбел');
+      const smell = t.includes('запах') || t.includes('аромат');
+      const kid = t.includes('ребен') || t.includes('ребён') || t.includes('дет');
+
+      if (kid) {
+        return 'Для ребёнка делаем акцент на привычке и игре. Курс: мягкая детская паста Oral‑B + ежедневные задания ' +
+               'в игре «Путь Зубика». Маскоты: Зубик‑Новичок, Щётка‑тренер и Бактерии, которых нужно побеждать. ' +
+               'Главный KPI — streak по дням, а не агрессивное отбеливание.';
+      }
+      if (coffee && sens) {
+        return 'Комбинированная задача: кофе/чай + чувствительность. Утром — защитная паста Oral‑B против пигментации ' +
+               '(история про Зубика‑Защитника), вечером — формула для реминерализации и чувствительных зубов ' +
+               '(Молекула‑строитель). В игре твой Зубик‑Новичок постепенно становится Защитником, а количество ' +
+               'Бактерий уменьшается.';
+      }
+      if (coffee || white) {
+        return 'Фокус на белизне и пятнах от напитков. Основной продукт — отбеливающая паста Oral‑B с защитой эмали. ' +
+               'Персонажи: Зубик‑Новичок → Зубик‑Защитник, Бактерии и тёмный налёт исчезают по мере streak. ' +
+               'Бот также порекомендует ограничить кофе/чай между чистками.';
+      }
+      if (sens || gums) {
+        return 'Главное — комфорт и здоровье эмали/дёсен. Рекомендуем курс с пастой Oral‑B для чувствительных зубов ' +
+               'и дёсен (Молекула‑строитель) + мягкая техника от Щётки‑тренера. В игре прогресс идёт за аккуратность, ' +
+               'а не за жёсткий скраб, Бактерии уходят постепенно.';
+      }
+      if (smell) {
+        return 'Основной герой здесь Свежик. Курс: паста Oral‑B с капсулами длительной свежести + режим утро/вечер ' +
+               'и напоминания в течение дня. Игра помогает удерживать streak, чтобы эффект свежести не прерывался.';
+      }
+      return 'Я могу подобрать курс Oral‑B под кофе/чай, чувствительность, белизну, проблемы с дёснами, запах или задачу для ребёнка. ' +
+             'Опиши, пожалуйста, ситуацию чуть подробнее — что беспокоит больше всего?';
+    }
+
+    chatForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const val = chatInput.value.trim();
+      if (!val) return;
+      appendMessage(chatBody, val, false);
+      chatInput.value = '';
+      setTimeout(() => appendMessage(chatBody, getMainResponse(val), true), 250);
+    });
+
+    document.querySelectorAll('.quick-btn[data-prompt]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const prompt = btn.dataset.prompt;
+        appendMessage(chatBody, prompt, false);
+        appendMessage(chatBody, getMainResponse(prompt), true);
+      });
+    });
+
+    // ==== Игра «Путь Зубика» ====
+    const problemTags = document.getElementById('problem-tags');
+    const selectedProblemEl = document.getElementById('selected-problem');
+    const productRecoEl = document.getElementById('product-reco');
+    const progressBar = document.getElementById('progress-bar');
+    const progressLabel = document.getElementById('progress-label');
+    const streakLabel = document.getElementById('streak-label');
+    const cleanButton = document.getElementById('clean-button');
+
+    let streak = 0;
+    let selectedProblemKey = null;
+
+    const recoByProblem = {
+      coffee: 'Задача: меньше пигментации от кофе/чая. Курс: защитная отбеливающая паста Oral‑B (история Зубика‑Защитника) ' +
+              '+ напоминания в игре не пропускать чистки после плотных кофе‑дней.',
+      sensitivity: 'Задача: сильная чувствительность/дёсны. Курс: паста Oral‑B для чувствительных зубов с реминерализацией ' +
+                   '(Молекула‑строитель) + мягкая техника от Щётки‑тренера, ограничения по кислотам.',
+      whitening: 'Задача: безопасное отбеливание. Курс: отбеливающая паста Oral‑B + контроль частоты кофе/чая, ' +
+                 'в игре отслеживается прогресс Зубика от Новичка к Защитнику.',
+      fresh: 'Задача: долгая свежесть. Курс: паста Oral‑B с длительным эффектом (Свежик) + трекинг streak в игре, ' +
+             'чтобы свежесть не заканчивалась после пары дней.',
+      kids: 'Задача: привычка у ребёнка. Курс: детская паста Oral‑B + ежедневные задания от Щётки‑тренера, ' +
+            'борьба с Бактериями и наклейки/награды за streak.'
+    };
+
+    if (problemTags) {
+      problemTags.querySelectorAll('.problem-tag').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const key = btn.dataset.problem;
+          selectedProblemKey = key;
+          problemTags.querySelectorAll('.problem-tag').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          selectedProblemEl.textContent = 'Задача: ' + btn.textContent.trim();
+          productRecoEl.textContent = recoByProblem[key] || 'Для этой задачи мы подберём индивидуальный курс Oral‑B.';
+        });
+      });
+    }
+
+    if (cleanButton) {
+      cleanButton.addEventListener('click', () => {
+        streak += 1;
+        if (streak > 30) streak = 30;
+        const pct = Math.min(100, (streak / 21) * 100); // 21 день до стабильной привычки
+        progressBar.style.width = pct + '%';
+        streakLabel.textContent = 'Streak: ' + streak + ' дн.';
+        if (pct < 40) {
+          progressLabel.textContent = 'Уровень: Зубик‑Новичок';
+        } else if (pct < 80) {
+          progressLabel.textContent = 'Уровень: Зубик на пути к Защитнику';
+        } else {
+          progressLabel.textContent = 'Уровень: Зубик‑Защитник';
+        }
+      });
+    }
+
+    // ==== Мини‑бот Щётки‑тренера ====
+    const chatBodyGame = document.getElementById('chat-body-game');
+    const chatFormGame = document.getElementById('chat-form-game');
+    const chatInputGame = document.getElementById('chat-input-game');
+
+    function getGameResponse(textRaw) {
+      // используем ту же бизнес‑логику, но объясняем языком игры
+      const base = getMainResponse(textRaw);
+      return base + ' В игровом интерфейсе мы визуализируем это через эволюцию Зубика, ' +
+             'подсказки Щётки‑тренера и победу над Бактериями.';
+    }
+
+    chatFormGame.addEventListener('submit', e => {
+      e.preventDefault();
+      const val = chatInputGame.value.trim();
+      if (!val) return;
+      appendMessage(chatBodyGame, val, false);
+      chatInputGame.value = '';
+      setTimeout(() => appendMessage(chatBodyGame, getGameResponse(val), true), 250);
+    });
+
+    document.querySelectorAll('[data-prompt-game]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const prompt = btn.dataset.promptGame;
+        appendMessage(chatBodyGame, prompt, false);
+        appendMessage(chatBodyGame, getGameResponse(prompt), true);
+      });
+    });
+  </script>
+</body>
+</html>
